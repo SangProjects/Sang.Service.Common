@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Sang Solutions</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <!-- <icon>icon.png</icon> -->
+    <projectUrl>http://project_url_here_or_delete_this_line/</projectUrl>
+    <description>A typical library application designed to manage common functionalities across the entire project.</description>
+    <releaseNotes>This is the first test release.</releaseNotes>
+    <copyright>$copyright$</copyright>
+    <tags>TestTag1 TestTag2</tags>
+  </metadata>
+</package>
