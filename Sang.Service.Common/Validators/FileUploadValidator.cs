@@ -1,14 +1,14 @@
-﻿using Sang.Security.WebApi.Models;
-using FluentValidation;
-using Microsoft.Extensions.Options;
+﻿using FluentValidation;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
+using Sang.Service.Common.Models;
 using System.IO;
 using System.Linq;
 
 namespace Sang.Service.Common.Validators
 {
     public class FileUploadValidator : AbstractValidator<IFormFile>
-    {      
+    {
         private readonly FileUploadSettings _fileUploadSettings;
         public FileUploadValidator(IOptions<FileUploadSettings> fileUploadSettings)
         {
@@ -29,5 +29,5 @@ namespace Sang.Service.Common.Validators
         }
     }
 
-   
+
 }

@@ -21,12 +21,12 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        var environmentName = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
+        //var environmentName = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
 
         IConfigurationRoot configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json")
-            .AddJsonFile($"appsettings.{environmentName}.json", true)
+            //.SetBasePath(Directory.GetCurrentDirectory())
+            //.AddJsonFile("appsettings.json")
+            //.AddJsonFile($"appsettings.{environmentName}.json", true)
             .Build();
 
         var builder = WebApplication.CreateBuilder(args);
