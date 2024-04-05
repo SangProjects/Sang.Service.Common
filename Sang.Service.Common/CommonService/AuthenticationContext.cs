@@ -24,8 +24,8 @@ namespace Sang.Service.Common.CommonService
 
         public async Task<string> GetConnection()
         {
-            var token = _contextAccessor.HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", "");
-            //var token = _contextAccessor.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            //var token = _contextAccessor.HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", string.Empty);
+            var token = _contextAccessor.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
             try
             {
                 if (!string.IsNullOrEmpty(token))
