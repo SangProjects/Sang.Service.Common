@@ -3,10 +3,8 @@ using Sang.Service.Common.CommonService;
 using Sang.Service.Common.Repositories.DataScripts;
 using Sang.Service.Common.Services;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Threading.Tasks;
 
 namespace Sang.Service.Common.Repositories
 {
@@ -35,7 +33,7 @@ namespace Sang.Service.Common.Repositories
                 //connectionString = await _defaultEntityService.ExecuteScalar(DefaultDbScripts.GetConnectionStringSql(), parameters.ToArray());
 
                 if (connection == null) throw new ArgumentException("Invalid database name.");
-                string connectionString = Convert.ToString(connection.Rows[0]["sConnection"]);
+                var connectionString = Convert.ToString(connection.Rows[0]["sConnection"]);
                 _logger.LogInformation("Connection string fetched");
 
                 return connectionString;

@@ -1,21 +1,21 @@
-﻿using Sang.Service.Common.Models;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Data.SqlClient;
-using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
+using Sang.Service.Common.Extension;
+using Sang.Service.Common.Models;
 using System;
+using System.Data.SqlClient;
 
 namespace Sang.Service.Common.CommonService
 {
     public class DbTransactionService : IDbTransactionService
     {
-        private readonly DatabaseConfiguration _dbConfiguration;
+        private readonly IApiSettings _apiSettings;
         private ILogger<DbTransactionService> _logger;
 
-        public DbTransactionService(IOptions<DatabaseConfiguration> dbConfiguration,
-                                    ILogger<DbTransactionService> logger)            
+        public DbTransactionService(IApiSettings apiSettings,
+                                    ILogger<DbTransactionService> logger)
         {
-            _dbConfiguration = dbConfiguration.Value;
+            _apiSettings = apiSettings;
             _logger = logger;
         }
 
@@ -23,7 +23,7 @@ namespace Sang.Service.Common.CommonService
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_dbConfiguration.DBConnection))
+                using (SqlConnection connection = new SqlConnection(_apiSettings.DBConnection))
                 {
                     await connection.OpenAsync();
 
@@ -37,7 +37,7 @@ namespace Sang.Service.Common.CommonService
                         catch (Exception)
                         {
                             transaction.Rollback();
-                            throw; 
+                            throw;
                         }
                     }
                 }

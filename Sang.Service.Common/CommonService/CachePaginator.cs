@@ -2,7 +2,6 @@
 using System;
 using System.Data;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Sang.Service.Common.CommonService
 {
@@ -30,9 +29,9 @@ namespace Sang.Service.Common.CommonService
                 foreach (DataRow row in paginatedRows)
                     paginatedDataTable.ImportRow(row);
 
+                // NOTE: Need to uncomment if required
                 //int totalRows = cacheData.Rows.Count;
                 //int totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
                 //return Task.FromResult<object>((paginatedDataTable, totalPages));
 
                 return Task.FromResult<object>(paginatedDataTable);

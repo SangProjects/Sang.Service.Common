@@ -1,33 +1,33 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Sang.Service.Common.Extension;
 using Sang.Service.Common.Models;
 using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.Threading.Tasks;
 
 namespace Sang.Service.Common.CommonService
 {
     public class DefaultEntityService : IDefaultEntityService
     {
-        private readonly DatabaseConfiguration _dbConfiguration;
-        private readonly ILogger<DefaultEntityService> _logger;       
+        private readonly IApiSettings _apiSettings;
+        private readonly ILogger<DefaultEntityService> _logger;
 
-        public DefaultEntityService(IOptions<DatabaseConfiguration> dbConfiguration,
+        public DefaultEntityService(IApiSettings apiSettings,
                                    ILogger<DefaultEntityService> logger)
         {
-            _dbConfiguration = dbConfiguration.Value;
+            _apiSettings = apiSettings;
             _logger = logger;
         }
- 
+
         public async Task<DataTable> GetDataTable(string query, SqlParameter[] parameters = null)
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_dbConfiguration.DefaultDBConnection))
+                using (SqlConnection connection = new SqlConnection(_apiSettings.DefaultDBConnection))
                 {
                     if (connection.State != ConnectionState.Open)
-                    await connection.OpenAsync();
+                        await connection.OpenAsync();
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
@@ -38,7 +38,7 @@ namespace Sang.Service.Common.CommonService
                         var dataAdapter = new SqlDataAdapter(command);
                         dataAdapter.Fill(dataTable);
 
-                        return dataTable.Rows.Count > 0 ? dataTable : null;                        
+                        return dataTable.Rows.Count > 0 ? dataTable : null;
                     }
                 }
             }
@@ -52,7 +52,7 @@ namespace Sang.Service.Common.CommonService
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_dbConfiguration.DefaultDBConnection))
+                using (SqlConnection connection = new SqlConnection(_apiSettings.DefaultDBConnection))
                 {
                     if (connection.State != ConnectionState.Open)
                         await connection.OpenAsync();
@@ -73,7 +73,7 @@ namespace Sang.Service.Common.CommonService
             {
                 _logger.LogError(ex.Message);
                 throw;
-            }            
+            }
         }
     }
 }

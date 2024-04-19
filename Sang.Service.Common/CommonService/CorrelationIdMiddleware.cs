@@ -2,9 +2,8 @@
 using Microsoft.Extensions.Primitives;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace DemoCoreWebAPI.CommonService
+namespace Sang.Service.Common.CommonService
 {
     public class CorrelationIdMiddleware
     {
@@ -41,6 +40,6 @@ namespace DemoCoreWebAPI.CommonService
 
             await _request(httpContext);
         }
-   
+
     }
 }

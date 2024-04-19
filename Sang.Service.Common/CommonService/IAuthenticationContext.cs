@@ -5,5 +5,6 @@ namespace Sang.Service.Common.CommonService
     public interface IAuthenticationContext
     {
         Task<string> GetConnection();
+        Task<int> GetUserId();
     }
 }
