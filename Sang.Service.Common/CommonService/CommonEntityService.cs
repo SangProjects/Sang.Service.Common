@@ -1,27 +1,26 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Sang.Service.Common.Extension;
 using Sang.Service.Common.Models;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Sang.Service.Common.CommonService
 {
     public class CommonEntityService : ICommonEntityService
     {
-        private readonly DatabaseConfiguration _dbConfiguration;
+        private readonly IApiSettings _apiSettings;
         private readonly IAuthenticationContext _authenticationContext;
         private readonly ILogger<CommonEntityService> _logger;
 
-        public CommonEntityService(IOptions<DatabaseConfiguration> dbConfiguration,
+        public CommonEntityService(IApiSettings apiSettings,
                                    IAuthenticationContext authenticationContext,
                                    ILogger<CommonEntityService> logger)
         {
-            _dbConfiguration = dbConfiguration.Value;
+            _apiSettings = apiSettings;
             _logger = logger;
             _authenticationContext = authenticationContext;
 
@@ -31,7 +30,7 @@ namespace Sang.Service.Common.CommonService
         {
             string connection = await _authenticationContext.GetConnection();
             if (!string.IsNullOrEmpty(connection))
-                _dbConfiguration.DBConnection = connection;
+                _apiSettings.DBConnection = connection;
         }
 
         public async Task<IEnumerable<T>> GetAllEntitiesAsync<T>(string sql, SqlParameter[] parameters = null)
@@ -39,7 +38,7 @@ namespace Sang.Service.Common.CommonService
             try
             {
                 //using (SqlConnection connection = new(_dbConfiguration.DBConnection))
-                using (SqlConnection connection = new SqlConnection(_dbConfiguration.DBConnection))                
+                using (SqlConnection connection = new SqlConnection(_apiSettings.DBConnection))
                 {
                     if (connection.State != ConnectionState.Open) await connection.OpenAsync();
 
@@ -100,7 +99,7 @@ namespace Sang.Service.Common.CommonService
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_dbConfiguration.DBConnection))
+                using (SqlConnection connection = new SqlConnection(_apiSettings.DBConnection))
                 {
                     if (connection.State != ConnectionState.Open)
                         await connection.OpenAsync();

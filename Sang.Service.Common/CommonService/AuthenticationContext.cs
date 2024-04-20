@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-using Sang.Service.Common.Models;
+using Sang.Service.Common.Extension;
 using Sang.Service.Common.Services;
 using Sang.Service.Common.Validators;
 using System;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace Sang.Service.Common.CommonService
 {
@@ -12,29 +11,45 @@ namespace Sang.Service.Common.CommonService
     {
         private readonly IDefaultDbRepository _defaultDbRepository;
         private readonly IHttpContextAccessor _contextAccessor;
-        private readonly AuthenticationSettings _authenticationSettings;
+        private readonly IApiSettings _apiSettings;
 
         public AuthenticationContext(IDefaultDbRepository defaultDbRepository,
-            IHttpContextAccessor contextAccessor, IOptions<AuthenticationSettings> authenticationSettings)            
+            IHttpContextAccessor contextAccessor, IApiSettings apiSettings)
         {
             _defaultDbRepository = defaultDbRepository;
             _contextAccessor = contextAccessor;
-            _authenticationSettings = authenticationSettings.Value;
+            _apiSettings = apiSettings;
         }
 
         public async Task<string> GetConnection()
         {
-            //var token = _contextAccessor.HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", string.Empty);
-            var token = _contextAccessor.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
+            var token = _contextAccessor?.HttpContext?.Request.Headers.Authorization.ToString().Replace("Bearer ", string.Empty);
             try
             {
                 if (!string.IsNullOrEmpty(token))
                 {
-                    var claimsPrincipal = TokenValidator.ValidateToken(token, _authenticationSettings.TokenKey);                    
+                    var claimsPrincipal = TokenValidator.ValidateToken(token, _apiSettings.SymmetricSecurityKey);
                     var databseKey = claimsPrincipal?.FindFirst("DatabaseKey")?.Value;
                     return await _defaultDbRepository.GetConnectionString(databseKey);
                 }
                 return null;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public async Task<int> GetUserId()
+        {
+            var token = _contextAccessor?.HttpContext?.Request.Headers.Authorization.ToString().Replace("Bearer ", string.Empty);
+            try
+            {
+                if (!string.IsNullOrEmpty(token))
+                {
+                    var claimsPrincipal = TokenValidator.ValidateToken(token, _apiSettings.SymmetricSecurityKey);
+                    return int.Parse(claimsPrincipal?.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                }
+                return 0;
             }
             catch (Exception)
             {

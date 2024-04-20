@@ -1,8 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 
 namespace Sang.Service.Common.UtilityManager
 {
@@ -81,6 +78,31 @@ namespace Sang.Service.Common.UtilityManager
                 }
             }
             return list;
+        }
+
+        public static DataTable ToTableValuedParameter<T>(this IEnumerable<T> list)
+        {
+            var dataTable = new DataTable();
+            var properties = typeof(T).GetProperties();
+
+            foreach (var property in properties)
+            {
+                dataTable.Columns.Add(property.Name, property.PropertyType);
+            }
+
+            foreach (var item in list)
+            {
+                var row = dataTable.NewRow();
+
+                foreach (var property in properties)
+                {
+                    row[property.Name] = property.GetValue(item);
+                }
+
+                dataTable.Rows.Add(row);
+            }
+
+            return dataTable;
         }
         public static string SerializeData(object result) => 
             JsonConvert.SerializeObject(result);

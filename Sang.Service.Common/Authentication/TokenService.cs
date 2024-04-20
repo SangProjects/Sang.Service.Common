@@ -2,34 +2,29 @@
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Sang.Service.Common.CommonService;
+using Sang.Service.Common.Extension;
 using Sang.Service.Common.Models;
 using Sang.Service.Common.Repositories.DataScripts;
 using Sang.Service.Common.Validators;
-using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Sang.Service.Common.Authentication
 {
     public class TokenService : ITokenService
     {
-        //private IUserService _userService;
         private readonly ICommonEntityService _commonEntityService;
-        private readonly AuthenticationSettings _authenticationSettings;
+        private readonly IApiSettings _apiSettings;
         private readonly ILogger<TokenService> _logger;
 
         public TokenService(ILogger<TokenService> logger,
-                            IOptions<AuthenticationSettings> authenticationSettings,
-                            //IUserService userService,
+                            IApiSettings apiSettings,
                             ICommonEntityService commonEntityService)
         {
             _logger = logger;
-            _authenticationSettings = authenticationSettings.Value;
-            //_userService = userService;
+            _apiSettings = apiSettings;
             _commonEntityService = commonEntityService;
         }
 
@@ -44,7 +39,7 @@ namespace Sang.Service.Common.Authentication
         public async Task<Tokens> RefreshToken(string refershToken)
         {
 
-            var principal = TokenValidator.ValidateToken(refershToken, _authenticationSettings.TokenKey);
+            var principal = TokenValidator.ValidateToken(refershToken, _apiSettings.SymmetricSecurityKey);
             if (principal == null)
             {
                 throw new ArgumentNullException("Invalid refresh token");
@@ -77,7 +72,7 @@ namespace Sang.Service.Common.Authentication
 
         private string GenerateToken(string user, string databseKey, int userId, bool isRefreshToken = false)
         {
-            SecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.TokenKey));
+            SecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_apiSettings.SymmetricSecurityKey));
 
             //Creating Claims. You can add more information in these claims. For example email id.
             var claims = new List<Claim>
@@ -96,8 +91,8 @@ namespace Sang.Service.Common.Authentication
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = !isRefreshToken ? DateTime.UtcNow.AddMinutes(_authenticationSettings.TokenExpiryMin)
-                                          : DateTime.UtcNow.AddMinutes(_authenticationSettings.RefreshTokenExpiryMin),
+                Expires = !isRefreshToken ? DateTime.UtcNow.AddMinutes(_apiSettings.TokenExpiryMin)
+                                          : DateTime.UtcNow.AddMinutes(_apiSettings.RefreshTokenExpiryMin),
                 SigningCredentials = credentials
             };
 

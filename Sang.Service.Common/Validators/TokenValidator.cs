@@ -24,12 +24,8 @@ namespace Sang.Service.Common.Validators
 
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
-                //if (securityToken is not JwtSecurityToken jwtSecurityToken
-                //    || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-                //    throw new SecurityTokenException("Invalid token");
-
-                //return principal;
-                if (!(securityToken is JwtSecurityToken jwtSecurityToken         // Note Need to check
+                
+                if (!(securityToken is JwtSecurityToken jwtSecurityToken
                      && jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
                                             StringComparison.InvariantCultureIgnoreCase)))
                 {
@@ -40,7 +36,6 @@ namespace Sang.Service.Common.Validators
             }
             catch (SecurityTokenExpiredException ex)
             {
-                //_logger.LogError(ex.Message);
                 throw new SecurityTokenExpiredException("Refresh token has expired");
             }
 
