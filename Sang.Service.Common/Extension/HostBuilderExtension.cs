@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Reflection;
@@ -10,7 +8,7 @@ namespace Sang.Service.Common.Extension
     public static class HostBuilderExtension
     {
         public const string SymmetricSecurityKey = "E9DB7E89123F52A9F2DB04EF04C7FE88";
-        public static IHostBuilder UseSangApi(this IHostBuilder builder )
+        public static IHostBuilder UseSangApi(this IHostBuilder builder)
         {
             var options = LoadSangApiOptions();
             var settings = options.LoadApiSettings();

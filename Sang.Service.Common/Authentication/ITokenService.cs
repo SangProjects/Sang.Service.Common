@@ -1,6 +1,4 @@
 ﻿using Sang.Service.Common.Models;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Sang.Service.Common.Authentication
 {

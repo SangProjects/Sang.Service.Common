@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
-using System.Threading.Tasks;
 
 namespace Sang.Service.Common.CommonService
 {
@@ -28,6 +26,6 @@ namespace Sang.Service.Common.CommonService
         Task<T> ExecuteScalar<T>(SqlConnection connection,
                                                     SqlTransaction transaction,
                                                     string query,
-                                                    SqlParameter[] parameters);        
+                                                    SqlParameter[] parameters);
     }
 }

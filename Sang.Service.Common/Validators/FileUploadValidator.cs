@@ -1,8 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
 using Sang.Service.Common.Extension;
-using Sang.Service.Common.Models;
 using System.Linq;
 
 namespace Sang.Service.Common.Validators

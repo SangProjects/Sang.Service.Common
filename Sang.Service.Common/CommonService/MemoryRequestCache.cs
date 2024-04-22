@@ -1,10 +1,8 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using System.Data;
-using System;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using System.Threading;
 using Sang.Service.Common.UtilityManager;
+using System;
+using System.Data;
 
 namespace Sang.Service.Common.CommonService
 {
@@ -16,7 +14,7 @@ namespace Sang.Service.Common.CommonService
         private ILogger<MemoryRequestCache> _logger;
         private readonly ICachePaginator _cachepaginator;
 
-        public MemoryRequestCache(IMemoryCache cache, 
+        public MemoryRequestCache(IMemoryCache cache,
                 ICachePaginator cachepaginator,
                 ILogger<MemoryRequestCache> logger)
         {
@@ -43,7 +41,7 @@ namespace Sang.Service.Common.CommonService
                 var result = await action();
                 CacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(cacheEntryLifeTime));
                 _cache.Set(key, result, CacheEntryOptions);
-                 return await GetPaginatedData(result, pageNumber, pageSize, key);
+                return await GetPaginatedData(result, pageNumber, pageSize, key);
             }
             catch (Exception ex)
             {
@@ -55,7 +53,7 @@ namespace Sang.Service.Common.CommonService
                 _cacheLock.Release();
             }
         }
-        
+
         public void ClearCache(string userCacheKey)
         {
             _cache.Remove(userCacheKey);

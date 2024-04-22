@@ -104,10 +104,10 @@ namespace Sang.Service.Common.UtilityManager
 
             return dataTable;
         }
-        public static string SerializeData(object result) => 
+        public static string SerializeData(object result) =>
             JsonConvert.SerializeObject(result);
 
-        public static DataTable DeserializeToTable(string result) => 
+        public static DataTable DeserializeToTable(string result) =>
             JsonConvert.DeserializeObject<DataTable>(result);
     }
 }

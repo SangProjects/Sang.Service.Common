@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Sang.Service.Common.Extension;
-using Sang.Service.Common.Models;
 using System;
 using System.Data;
 using System.Data.SqlClient;
