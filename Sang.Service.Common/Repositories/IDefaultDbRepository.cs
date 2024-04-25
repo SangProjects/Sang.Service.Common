@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace Sang.Service.Common.Services
+namespace Sang.Service.Common.Repositories
 {
     public interface IDefaultDbRepository
     {

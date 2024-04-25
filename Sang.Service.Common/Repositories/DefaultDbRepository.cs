@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sang.Service.Common.CommonService;
 using Sang.Service.Common.Repositories.DataScripts;
-using Sang.Service.Common.Services;
 using System;
 using System.Data;
 using System.Data.SqlClient;
