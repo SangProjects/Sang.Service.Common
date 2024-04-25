@@ -2,9 +2,9 @@
 
 namespace Sang.Service.Common.Services
 {
-    public interface IDefaultDbRepository
+    public interface IDefaultDbService
     {
         Task<string> GetConnectionString(string databseKey);
-        Task<DataTable> GetDatabase();
+        Task<DataTable?> GetDatabase();
     }
 }

@@ -192,16 +192,16 @@ namespace Sang.Service.Common.Extension
                     services.AddScoped<ICommonEntityService, CommonEntityService>();
                     services.AddScoped<IDefaultEntityService, DefaultEntityService>();
                     services.AddScoped<IDbTransactionService, DbTransactionService>();
+                    services.AddScoped<IDefaultDbService, DefaultDbService>();
                     services.AddScoped<ICachePaginator, CachePaginator>();
                     services.AddScoped<ITokenService, TokenService>();
                     services.AddScoped<IDefaultDbRepository, DefaultDbRepository>();
-
-
                 });
+
                 webhostBuilder.Configure((hostingContext, app) =>
                 {
                     // Standard configuration for Self host
-                    app.UseHttpsRedirection();
+                    //app.UseHttpsRedirection();
                     //app.UseStaticFiles();
                     //app.UseCookiePolicy();
                     app.UseAuthentication();

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data.SqlClient;
-using System.Threading.Tasks;
 
 namespace Sang.Service.Common.CommonService
 {

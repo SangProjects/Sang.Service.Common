@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Sang.Service.Common.Extension;
-using Sang.Service.Common.Models;
-using Serilog;
 using System;
 
 namespace Sang.Service.Common.CommonService
@@ -26,13 +23,14 @@ namespace Sang.Service.Common.CommonService
 
         public async Task InvokeAsync(HttpContext httpContext)
         {
-            if(httpContext.Request.Method != "POST")
+            if (httpContext.Request.Method != "POST")
             {
                 await _next(httpContext);
-            } else
+            }
+            else
             {
                 // Middleware is enabled only when the EnableRequestResponseLogging config value is set.
-                if(_apiSettings.IsRequestResponseLoggingEnabled)
+                if (_apiSettings.IsRequestResponseLoggingEnabled)
                 {
                     _logger.LogInformation(
                         $"HTTP request:\n" +
@@ -64,7 +62,8 @@ namespace Sang.Service.Common.CommonService
 
                     newResponseBody.Seek(0, SeekOrigin.Begin);
                     await newResponseBody.CopyToAsync(originalResponseBody);
-                } else
+                }
+                else
                 {
                     await _next(httpContext);
                 }
