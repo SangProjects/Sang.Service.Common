@@ -88,14 +88,14 @@ namespace Sang.Service.Common.Extension
                              .WithExposedHeaders("X-Token-Expired")
                              );
                         })
-                        .AddControllers()
-                        .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); })
+                        .AddControllers()                        
+                        .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 
-                        .AddNewtonsoftJson(options =>
-                        {
-                            options.SerializerSettings.Converters.Add(new StringEnumConverter());
-                            options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
-                        });
+                        //.AddNewtonsoftJson(options =>
+                        //{
+                        //    options.SerializerSettings.Converters.Add(new StringEnumConverter());
+                        //    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                        //});
 
                     // Add Swagger Document generation
                     services.AddSwaggerGen(options =>

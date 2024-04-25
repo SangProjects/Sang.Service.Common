@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Sang.Service.Common.Services;
+using Sang.Service.Common.Repositories;
 using System.Data;
 
 namespace Sang.Service.Common.Services

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Sang.Service.Common.Extension;
-using Sang.Service.Common.Services;
+using Sang.Service.Common.Repositories;
 using Sang.Service.Common.Validators;
 using System;
 using System.Security.Claims;
