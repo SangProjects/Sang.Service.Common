@@ -24,7 +24,7 @@ namespace Sang.Service.Common.CommonService
         }
 
         public async Task<object> GetOrExecute<T>(string key, Func<Task<T>> action, int pageNumber, int pageSize,
-                                                  int cacheEntryLifeTime)
+                                                  int cacheEntryLifeTime,string searchString="")
         {
             await _cacheLock.WaitAsync();
 
@@ -34,14 +34,14 @@ namespace Sang.Service.Common.CommonService
                 if (_cache.TryGetValue(key, out var value))
                 {
                     _logger.LogInformation($"Cache hit:{key} successfully retrieved");
-                    return await GetPaginatedData(value, pageNumber, pageSize, key);
+                    return await GetPaginatedData(value, pageNumber, pageSize, key, searchString);
                 }
 
                 _logger.LogInformation($"Cache Getting {key} from database");
                 var result = await action();
                 CacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(cacheEntryLifeTime));
                 _cache.Set(key, result, CacheEntryOptions);
-                return await GetPaginatedData(result, pageNumber, pageSize, key);
+                 return await GetPaginatedData(result, pageNumber, pageSize, key, searchString);
             }
             catch (Exception ex)
             {
@@ -54,15 +54,17 @@ namespace Sang.Service.Common.CommonService
             }
         }
 
-        public void ClearCache(string userCacheKey)
+        public void ClearCache(string cacheKey)
         {
-            _cache.Remove(userCacheKey);
+            _cache.Remove(cacheKey);
         }
 
-        private async Task<object> GetPaginatedData(object data, int pageNumber, int pageSize, string key)
+        private async Task<object> GetPaginatedData(object? data, int pageNumber, int pageSize, string key,string searchString)
         {
-            if (pageNumber <= 0 || data == null)
-                return data;
+           /* if (pageNumber <= 0 || data == null)
+            {    //return data;
+                return Utils.DeserializeToTable((string)data);
+            }*/
 
             var deserializeData = Utils.DeserializeToTable((string)data);
 
@@ -72,7 +74,7 @@ namespace Sang.Service.Common.CommonService
                 throw new NullReferenceException("Unable to deserialize cache data");
             }
 
-            return await _cachepaginator.GetPaginator<DataTable>(deserializeData, pageNumber, pageSize);
+            return await _cachepaginator.GetPaginator<DataTable>(deserializeData, pageNumber, pageSize, searchString);
         }
 
     }
