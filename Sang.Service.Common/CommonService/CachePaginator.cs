@@ -66,16 +66,9 @@ namespace Sang.Service.Common.CommonService
                 
                 foreach (DataRow row in paginatedRows)
                     paginatedDataTable.ImportRow(row);
+               
+                totalRows = searchString.IsNullOrEmpty() ? cacheData.Rows.Count : filteredDataTable.Rows.Count;
 
-                if (searchString.IsNullOrEmpty())
-                {
-                     totalRows = cacheData.Rows.Count;
-                }
-                else
-                {
-                     totalRows = filteredDataTable.Rows.Count;
-                }
-                
                 int totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
                 DataSet dataSet = new DataSet();
                 dataSet.Tables.Add(paginatedDataTable);
