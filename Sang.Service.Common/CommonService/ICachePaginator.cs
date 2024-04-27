@@ -4,6 +4,6 @@ namespace Sang.Service.Common.CommonService
 {
     public interface ICachePaginator
     {
-        Task<object> GetPaginator<T>(DataTable value, int pageNumber, int pageSize);
+        Task<DataSet> GetPaginator<T>(DataTable value, int pageNumber, int pageSize,string searchString="");
     }
 }

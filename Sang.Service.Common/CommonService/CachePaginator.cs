@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Data;
 using System.Linq;
@@ -14,27 +15,86 @@ namespace Sang.Service.Common.CommonService
             _logger = logger;
         }
 
-        public Task<object> GetPaginator<T>(DataTable cacheData, int pageNumber, int pageSize)
+        public Task<DataSet> GetPaginator<T>(DataTable cacheData, int pageNumber, int pageSize, string searchString="")
         {
             try
             {
+                int startIndex;
+                DataTable paginatedDataTable = new DataTable();
+                DataTable filteredDataTable = new DataTable();
+                IEnumerable<DataRow> paginatedRows;
+                int totalRows;
                 _logger.LogInformation($"Getting paginator data");
+                
+                if (pageNumber <= 0)               
+                    startIndex = 0;              
 
-                int startIndex = (pageNumber - 1) * pageSize;
-                var paginatedRows = cacheData.AsEnumerable()
+                if (pageSize <= 0)                
+                    pageSize = cacheData.Rows.Count;              
+              
+               if(!searchString.IsNullOrEmpty())
+               {
+                    filteredDataTable = cacheData.Select("Name Like '%"
+                                                         + searchString
+                                                         + "%' OR Address Like '%"
+                                                         + searchString
+                                                         + "'").CopyToDataTable();
+                    if(pageSize<=0)
+                    {
+                        pageSize = filteredDataTable.Rows.Count;
+                    }
+                    startIndex = (pageNumber - 1) * pageSize;
+                    paginatedRows = filteredDataTable.AsEnumerable()
+                                                 .Skip(startIndex)
+                                                 .Take(pageSize);
+
+                    paginatedDataTable = filteredDataTable.Clone();
+
+                }
+                else
+                {
+                    startIndex = (pageNumber - 1) * pageSize;
+
+                    paginatedRows = cacheData.AsEnumerable()
+
                                              .Skip(startIndex)
                                              .Take(pageSize);
 
-                DataTable paginatedDataTable = cacheData.Clone();
+                    paginatedDataTable = cacheData.Clone();
+
+                }  
+                
                 foreach (DataRow row in paginatedRows)
                     paginatedDataTable.ImportRow(row);
 
-                // NOTE: Need to uncomment if required
-                //int totalRows = cacheData.Rows.Count;
-                //int totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-                //return Task.FromResult<object>((paginatedDataTable, totalPages));
+                if (searchString.IsNullOrEmpty())
+                {
+                     totalRows = cacheData.Rows.Count;
+                }
+                else
+                {
+                     totalRows = filteredDataTable.Rows.Count;
+                }
+                
+                int totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
+                DataSet dataSet = new DataSet();
+                dataSet.Tables.Add(paginatedDataTable);
+                dataSet.Tables[0].TableName = "Data";                
 
-                return Task.FromResult<object>(paginatedDataTable);
+                dataSet.Tables.Add(new DataTable("TotalRows")
+                {
+                    Columns = { { "TotalRows", typeof(int) } },
+                    Rows = { { totalRows } }
+                });
+
+                dataSet.Tables.Add(new DataTable("TotalPages")
+                {
+                    Columns = { { "TotalPages", typeof(int) } },
+                    Rows = { { totalPages } }
+                });
+
+                return Task.FromResult(dataSet);              
+                //return Task.FromResult<object>(paginatedDataTable);
             }
             catch (Exception ex)
             {
