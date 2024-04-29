@@ -46,8 +46,7 @@ namespace Sang.Service.Common.Repositories
         public async Task<DataTable> GetDatabase()
         {
             try
-            {
-                _logger.LogInformation("Fetching Company deatails ");
+            {                
                 DataTable database;
                 database = await _defaultEntityService.GetDataTable(DefaultDbScripts.GetDatabaseSql());
 

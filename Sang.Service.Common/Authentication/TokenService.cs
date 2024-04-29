@@ -41,6 +41,7 @@ namespace Sang.Service.Common.Authentication
             var principal = TokenValidator.ValidateToken(refershToken, _apiSettings.SymmetricSecurityKey);
             if (principal == null)
             {
+                _logger.LogError("Invalid refresh token");
                 throw new ArgumentNullException("Invalid refresh token");
             }
 
@@ -54,13 +55,11 @@ namespace Sang.Service.Common.Authentication
             };
             var user = await _commonEntityService.GetDataTable(UserScripts.GetUserByNameSql(), parameters.ToArray());
 
-            //var authUser = await _userService.GetUser(username);
-
             if (user == null)
             {
+                _logger.LogError("Invalid user");
                 throw new ArgumentNullException("Invalid user");
             }
-
 
             return new Tokens()
             {

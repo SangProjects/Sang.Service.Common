@@ -24,7 +24,6 @@ namespace Sang.Service.Common.CommonService
                 DataTable filteredDataTable = new DataTable();
                 IEnumerable<DataRow> paginatedRows;
                 int totalRows;
-                _logger.LogInformation($"Getting paginator data");
                 
                 if (pageNumber <= 0)               
                     startIndex = 0;              
@@ -49,7 +48,6 @@ namespace Sang.Service.Common.CommonService
                                                  .Take(pageSize);
 
                     paginatedDataTable = filteredDataTable.Clone();
-
                 }
                 else
                 {
@@ -61,7 +59,6 @@ namespace Sang.Service.Common.CommonService
                                              .Take(pageSize);
 
                     paginatedDataTable = cacheData.Clone();
-
                 }  
                 
                 foreach (DataRow row in paginatedRows)
