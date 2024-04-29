@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Sang.Service.Common.Repositories;
+﻿using Sang.Service.Common.Repositories;
 using System.Data;
 
 namespace Sang.Service.Common.Services
@@ -7,13 +6,10 @@ namespace Sang.Service.Common.Services
     public class DefaultDbService : IDefaultDbService
     {
         private IDefaultDbRepository _databaseRepository;
-        private ILogger<DefaultDbService> _logger;
 
-        public DefaultDbService(IDefaultDbRepository databaseRepository,
-                           ILogger<DefaultDbService> logger)
+        public DefaultDbService(IDefaultDbRepository databaseRepository)
         {
             _databaseRepository = databaseRepository;
-            _logger = logger;
         }
 
         public async Task<string> GetConnectionString(string databseKey) =>
