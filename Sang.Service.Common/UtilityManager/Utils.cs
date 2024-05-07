@@ -87,7 +87,8 @@ namespace Sang.Service.Common.UtilityManager
 
             foreach (var property in properties)
             {
-                dataTable.Columns.Add(property.Name, property.PropertyType);
+                //dataTable.Columns.Add(property.Name, property.PropertyType);
+                dataTable.Columns.Add(property.Name);
             }
 
             foreach (var item in list)
@@ -104,10 +105,28 @@ namespace Sang.Service.Common.UtilityManager
 
             return dataTable;
         }
-        public static string SerializeData(object result) =>
+        public static DataTable SetColumnsOrder(this DataTable dtbl, DataTable columnNames)
+        {
+            foreach (DataRow dr in columnNames.Rows)
+            {               
+                if (!dtbl.Columns.Contains(dr["name"].ToString()))
+                {
+                    dtbl.Columns.Add(dr["name"].ToString());
+                }
+                dtbl.Columns[dr["name"].ToString()].SetOrdinal(columnNames.Rows.IndexOf(dr));                
+            }
+            return dtbl;
+        }
+
+        public static DataTable ConvertJObjectToDataTable(dynamic jObject) =>
+            JsonConvert.DeserializeObject<DataTable>(JsonConvert.SerializeObject(jObject));
+
+        public static string SerializeData(object? result) => 
             JsonConvert.SerializeObject(result);
 
-        public static DataTable DeserializeToTable(string result) =>
+        public static DataTable? DeserializeToTable(string? result) => 
             JsonConvert.DeserializeObject<DataTable>(result);
+        public static DataSet? DeserializeToDataSet(string? result) =>
+            JsonConvert.DeserializeObject<DataSet>(result);
     }
 }

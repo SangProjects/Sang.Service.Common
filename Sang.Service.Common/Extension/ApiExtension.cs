@@ -13,6 +13,7 @@ using Newtonsoft.Json.Converters;
 using Sang.Service.Common.Authentication;
 using Sang.Service.Common.CommonService;
 using Sang.Service.Common.Controller;
+using Sang.Service.Common.DynamicManager;
 using Sang.Service.Common.Repositories;
 using Sang.Service.Common.Services;
 using Sang.Service.Common.Validators;
@@ -88,14 +89,16 @@ namespace Sang.Service.Common.Extension
                              .WithExposedHeaders("X-Token-Expired")
                              );
                         })
+                        //.AddMvcCore().AddNewtonsoftJson();
                         .AddControllers()                        
-                        .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
+                        .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); })
+                        .AddNewtonsoftJson();
 
-                        //.AddNewtonsoftJson(options =>
-                        //{
-                        //    options.SerializerSettings.Converters.Add(new StringEnumConverter());
-                        //    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
-                        //});
+                    //.AddNewtonsoftJson(options =>
+                    //{
+                    //    options.SerializerSettings.Converters.Add(new StringEnumConverter());
+                    //    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                    //});
 
                     // Add Swagger Document generation
                     services.AddSwaggerGen(options =>
@@ -196,6 +199,7 @@ namespace Sang.Service.Common.Extension
                     services.AddScoped<ICachePaginator, CachePaginator>();
                     services.AddScoped<ITokenService, TokenService>();
                     services.AddScoped<IDefaultDbRepository, DefaultDbRepository>();
+                    services.AddScoped<IDynamicRequestHandler, DynamicRequestHandler>();
                 });
 
                 webhostBuilder.Configure((hostingContext, app) =>
