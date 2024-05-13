@@ -8,7 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Sang.Service.Common.Authentication;
 using Sang.Service.Common.CommonService;
@@ -22,7 +21,6 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.Json.Serialization;
 
 namespace Sang.Service.Common.Extension
 {
@@ -89,10 +87,9 @@ namespace Sang.Service.Common.Extension
                              .WithExposedHeaders("X-Token-Expired")
                              );
                         })
-                        //.AddMvcCore().AddNewtonsoftJson();
-                        .AddControllers()                        
-                        .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); })
-                        .AddNewtonsoftJson();
+                        
+                        .AddControllers()
+                        .AddNewtonsoftJson(options => { options.SerializerSettings.Converters.Add(new StringEnumConverter()); });
 
                     //.AddNewtonsoftJson(options =>
                     //{
@@ -204,32 +201,32 @@ namespace Sang.Service.Common.Extension
 
                 webhostBuilder.Configure((hostingContext, app) =>
                 {
+
                     // Standard configuration for Self host
                     //app.UseHttpsRedirection();
                     //app.UseStaticFiles();
                     //app.UseCookiePolicy();
                     app.UseAuthentication();
 
-
                     // OpenAPI Documentation
                     app.UseSwagger();
                     app.UseCors(_policyName);
-                    app.UseSwaggerUI();
                     app.UseSwaggerUI(options =>
                     {
                         options.EnableTryItOutByDefault();
                         options.EnableFilter();
                         //options.EnablePersistAuthorization();
-                        options.SwaggerEndpoint(settings.DocumentUrl, settings.ApiFullName);
+                        //options.SwaggerEndpoint(settings.DocumentUrl, settings.ApiFullName);
                     });
 
-                    // Controllers and Routes
+                    // Middleware
+                    app.UseMiddleware<RequestResponseLoggerMiddleware>();
+                    app.UseMiddleware<CorrelationIdMiddleware>();
+
+                    // Routing and Endpoints
                     app.UseRouting();
                     app.UseAuthorization();
                     app.UseEndpoints(endpoints => endpoints.MapControllers());
-
-                    app.UseMiddleware<RequestResponseLoggerMiddleware>();
-                    app.UseMiddleware<CorrelationIdMiddleware>();
                 });
             });
 
