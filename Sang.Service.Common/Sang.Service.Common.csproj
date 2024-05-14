@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>1.0.19</Version>
+	<Version>1.0.24</Version>
 	<Copyright>All Copyrights Reserved</Copyright>
 	<Company>Sang Solutions</Company>
 	<Description>A typical library application designed to manage common functionalities across the entire project</Description>
@@ -28,7 +28,7 @@
 	<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />	  
 	<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
 	<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.3" />
-	<PackageReference Include="Serilog.Enrichers.CorrelationId" Version="3.0.1" />
+	<PackageReference Include="Serilog.Enrichers.CorrelationId" Version="3.0.1" />	 
   </ItemGroup>
 
 </Project>
