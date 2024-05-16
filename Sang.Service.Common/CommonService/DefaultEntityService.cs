@@ -46,25 +46,23 @@ namespace Sang.Service.Common.CommonService
                 throw;
             }
         }
-        public async Task<T> ExecuteScalar<T>(string query, SqlParameter[] parameters = null)
+        public DataTable? ExecuteAndFetchDataTable(SqlConnection connection,
+                                                  SqlTransaction transaction,
+                                                  string procedureName,
+                                                  SqlParameter[] parameters)
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_apiSettings.DefaultDBConnection))
+                using (SqlCommand command = new SqlCommand(procedureName, connection, transaction))
                 {
-                    if (connection.State != ConnectionState.Open)
-                        await connection.OpenAsync();
+                    DataTable dataTable = new DataTable();
+                    command.CommandType = CommandType.StoredProcedure;
+                    if (parameters != null)
+                        command.Parameters.AddRange(parameters);
+                    var dataAdapter = new SqlDataAdapter(command);
+                    dataAdapter.Fill(dataTable);
 
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        command.CommandType = CommandType.Text;
-
-                        if (parameters != null)
-                            command.Parameters.AddRange(parameters);
-                        var returnValue = await command.ExecuteScalarAsync();
-
-                        return (T)returnValue;
-                    }
+                    return dataTable.Rows.Count > 0 ? dataTable : null;
                 }
             }
             catch (Exception ex)

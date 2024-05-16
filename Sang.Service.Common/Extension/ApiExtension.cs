@@ -133,7 +133,7 @@ namespace Sang.Service.Common.Extension
                         });
 
                         options.DocInclusionPredicate((docName, apiDescription) =>
-                           {
+                        {
                                if (!apiDescription.TryGetMethodInfo(out MethodInfo methodInfo))
                                    return false;
 
@@ -141,7 +141,7 @@ namespace Sang.Service.Common.Extension
                                                            GetCustomAttributes(typeof(DisableInProductionAttribute), true)
                                                            .Any() ?? false;
                                return !isNonProdController;
-                           });
+                        });
 
                         options.DescribeAllParametersInCamelCase();//  note here this needs to check
                         options.UseInlineDefinitionsForEnums();
@@ -154,11 +154,11 @@ namespace Sang.Service.Common.Extension
                         xmlFilenames.ForEach(xmlFilename => options.IncludeXmlComments(xmlFilename, true));
                     });
                     services.AddAuthentication(options =>
-                     {
+                    {
                          options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                          options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                          options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                     })
+                    })
                       .AddJwtBearer(options =>
                       {
                           options.TokenValidationParameters = new TokenValidationParameters
@@ -197,6 +197,7 @@ namespace Sang.Service.Common.Extension
                     services.AddScoped<ITokenService, TokenService>();
                     services.AddScoped<IDefaultDbRepository, DefaultDbRepository>();
                     services.AddScoped<IDynamicRequestHandler, DynamicRequestHandler>();
+                    services.AddScoped<IDefaultDbTransactionService, DefaultDbTransactionService>();
                 });
 
                 webhostBuilder.Configure((hostingContext, app) =>
