@@ -6,6 +6,9 @@ namespace Sang.Service.Common.CommonService
     public interface IDefaultEntityService
     {
         Task<DataTable> GetDataTable(string query, SqlParameter[] parameters = null);
-        Task<T> ExecuteScalar<T>(string query, SqlParameter[] parameters = null);
+        DataTable? ExecuteAndFetchDataTable(SqlConnection connection,
+                                                  SqlTransaction transaction,
+                                                  string procedureName,
+                                                  SqlParameter[] parameters);
     }
 }

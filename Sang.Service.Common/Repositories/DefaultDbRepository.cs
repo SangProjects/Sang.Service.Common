@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sang.Service.Common.CommonService;
 using Sang.Service.Common.Repositories.DataScripts;
-using System;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -9,14 +8,17 @@ namespace Sang.Service.Common.Repositories
 {
     public class DefaultDbRepository : IDefaultDbRepository
     {
+        private readonly IDefaultDbTransactionService _defaultDbTransactionService;
         private readonly ILogger<DefaultDbRepository> _logger;
         private readonly IDefaultEntityService _defaultEntityService;
 
         public DefaultDbRepository(IDefaultEntityService defaultEntityService,
-            ILogger<DefaultDbRepository> logger)
+                                   IDefaultDbTransactionService defaultDbTransactionService,
+                                   ILogger<DefaultDbRepository> logger)
         {
             _logger = logger;
             _defaultEntityService = defaultEntityService;
+            _defaultDbTransactionService = defaultDbTransactionService;
         }
         public async Task<string> GetConnectionString(string databseKey)
         {
@@ -46,10 +48,15 @@ namespace Sang.Service.Common.Repositories
         public async Task<DataTable> GetDatabase()
         {
             try
-            {                
-                DataTable database;
-                database = await _defaultEntityService.GetDataTable(DefaultDbScripts.GetDatabaseSql());
-
+            {
+                //database = await _defaultEntityService.GetDataTable(DefaultDbScripts.GetDatabaseSql());
+                DataTable? database = new();
+                await _defaultDbTransactionService.ExecuteTransactionAsync(async (connection, transaction) =>
+                {
+                    database = _defaultEntityService.ExecuteAndFetchDataTable(connection, transaction,
+                                                                                    DefaultDbScripts.GetDatabaseProcedure(),
+                                                                                    null);
+                });
                 return database;
             }
             catch (Exception ex)

@@ -4,13 +4,13 @@ using System.Data.SqlClient;
 
 namespace Sang.Service.Common.CommonService
 {
-    public class DbTransactionService : IDbTransactionService
+    public class DefaultDbTransactionService : IDefaultDbTransactionService
     {
         private readonly IApiSettings _apiSettings;
-        private ILogger<DbTransactionService> _logger;
+        private ILogger<DefaultDbTransactionService> _logger;
 
-        public DbTransactionService(IApiSettings apiSettings,
-                                    ILogger<DbTransactionService> logger)
+        public DefaultDbTransactionService(IApiSettings apiSettings,
+                                    ILogger<DefaultDbTransactionService> logger)            
         {
             _apiSettings = apiSettings;
             _logger = logger;
@@ -20,7 +20,7 @@ namespace Sang.Service.Common.CommonService
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_apiSettings.DBConnection))
+                using (SqlConnection connection = new(_apiSettings.DefaultDBConnection))
                 {
                     await connection.OpenAsync();
 
@@ -34,7 +34,7 @@ namespace Sang.Service.Common.CommonService
                         catch (Exception)
                         {
                             transaction.Rollback();
-                            throw;
+                            throw; 
                         }
                     }
                 }
@@ -42,7 +42,7 @@ namespace Sang.Service.Common.CommonService
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception($"Database connection error: {ex.Message}", ex);
+                throw new Exception($"Default Database connection error: {ex.Message}", ex);
             }
         }
     }
