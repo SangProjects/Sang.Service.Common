@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Sang.Service.Common.Extension;
-using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
@@ -26,16 +25,27 @@ namespace Sang.Service.Common.CommonService
         }
         public async Task InitializeAsync()
         {
+            //string connection = await _authenticationContext.GetConnection();
+            //if (!string.IsNullOrEmpty(connection))
+            //    _apiSettings.DBConnection = connection;
+
             string connection = await _authenticationContext.GetConnection();
             if (!string.IsNullOrEmpty(connection))
-                _apiSettings.DBConnection = connection;
+            {
+
+                var baseConnectionString = _apiSettings.DefaultDBConnection;
+                var builder = new SqlConnectionStringBuilder(baseConnectionString)
+                {
+                    InitialCatalog = connection
+                };
+                _apiSettings.DBConnection = builder.ConnectionString;
+            }
         }
 
         public async Task<IEnumerable<T>> GetAllEntitiesAsync<T>(string sql, SqlParameter[] parameters = null)
         {
             try
-            {
-                //using (SqlConnection connection = new(_dbConfiguration.DBConnection))
+            {               
                 using (SqlConnection connection = new SqlConnection(_apiSettings.DBConnection))
                 {
                     if (connection.State != ConnectionState.Open) await connection.OpenAsync();
